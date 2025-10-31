@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>بازی آموزشی جمع بردارها</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>بازی آموزشی جمع بردارها</h1>
+
+    <div class="container">
+        <label>بردار A (x₁ , y₁):</label>
+        <input id="x1" type="number" value="2">
+        <input id="y1" type="number" value="1">
+        <label>ضریب k₁:</label>
+        <input id="k1" type="number" value="1">
+
+        <label>بردار B (x₂ , y₂):</label>
+        <input id="x2" type="number" value="1">
+        <input id="y2" type="number" value="3">
+        <label>ضریب k₂:</label>
+        <input id="k2" type="number" value="1">
+
+        <label>روش:</label>
+        <select id="method">
+            <option value="triangle">مثلثی</option>
+            <option value="parallelogram">متوازی‌الاضلاع</option>
+        </select>
+        <button onclick="drawVectors()">نمایش</button>
+    </div>
+
+    <canvas id="vectorCanvas"></canvas>
+    <div id="result"></div>
+
+    <script src="script.js"></script>
+</body>
+</html>

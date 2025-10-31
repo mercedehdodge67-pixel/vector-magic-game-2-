@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>»«“Ì ¬„Ê“‘Ì Ã„⁄ »—œ«—Â«</title>
+<style>
+body {
+    direction: rtl;
+    font-family: 'Vazirmatn', sans-serif;
+    background: linear-gradient(180deg, #ffffff, #e8f0ff);
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+h1 {
+    color: #1e3a8a;
+    margin-top: 20px;
+}
+.container {
+    background: rgba(255,255,255,0.9);
+    border-radius: 16px;
+    padding: 10px 20px;
+    box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 10px;
+}
+.container label { font-weight: bold; }
+input, select {
+    border: 1px solid #999;
+    border-radius: 8px;
+    padding: 5px;
+    width: 60px;
+    text-align: center;
+}
+button {
+    background: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 16px;
+    cursor: pointer;
+    font-weight: bold;
+}
+button:hover { background: #1e40af; }
+#vectorCanvas {
+    margin-top: 20px;
+    border: 2px solid #2563eb;
+    border-radius: 10px;
+    background: #fff;
+}
+#result {
+    font-size: 1.2em;
+    color: #1e3a8a;
+    margin-top: 10px;
+    font-weight: bold;
+}
+</style>
+</head>
+<body>
+<h1>»«“Ì ¬„Ê“‘Ì Ã„⁄ »—œ«—Â«</h1>
+
+<div class="container">
+    <label>»—œ«— A (x? , y?):</label>
+    <input id="x1" type="number" value="2">
+    <input id="y1" type="number" value="1">
+    <label>÷—Ì» k?:</label>
+    <input id="k1" type="number" value="1">
+    
+    <label>»—œ«— B (x? , y?):</label>
+    <input id="x2" type="number" value="1">
+    <input id="y2" type="number" value="3">
+    <label>÷—Ì» k?:</label>
+    <input id="k2" type="number" value="1">
+
+    <label>—Ê‘:</label>
+    <select id="method">
+        <option value="triangle">„À·ÀÌ</option>
+        <option value="parallelogram">„ Ê«“Ìù«·«÷·«⁄</option>
+    </select>
+    <button onclick="drawVectors()">‰„«Ì‘</button>
+</div>
+
+<canvas id="vectorCanvas"></canvas>
+<div id="result"></div>
+
+<script>
+const canvas = document.getElementById("vectorCanvas");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth * 0.9;
+canvas.height = window.innerHeight * 0.55;
+
+function drawAxes() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const cx = canvas.width/2, cy = canvas.height/2;
+    ctx.strokeStyle = "#1e3a8a";
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(cx, 0); ctx.lineTo(cx, canvas.height);
+    ctx.moveTo(0, cy); ctx.lineTo(canvas.width, cy);
+    ctx.stroke();
+}
+
+function drawArrow(x1,y1,x2,y2,color,width){
+    ctx.strokeStyle=color;
+    ctx.lineWidth=width;
+    ctx.beginPath();
+    ctx.moveTo(x1,y1);
+    ctx.lineTo(x2,y2);
+    ctx.stroke();
+    const angle=Math.atan2(y2-y1,x2-x1);
+    const headlen=10;
+    ctx.beginPath();
+    ctx.moveTo(x2,y2);
+    ctx.lineTo(x2-headlen*Math.cos(angle-Math.PI/6),
+               y2-headlen*Math.sin(angle-Math.PI/6));
+    ctx.lineTo(x2-headlen*Math.cos(angle+Math.PI/6),
+               y2-headlen*Math.sin(angle+Math.PI/6));
+    ctx.closePath();
+    ctx.fillStyle=color;
+    ctx.fill();
+}
+
+function animateVector(x1,y1,x2,y2,color,width,onComplete){
+    let frame=0,frames=60;
+    function step(){
+        frame++;
+        const t=frame/frames;
+        const xt=x1+(x2-x1)*t;
+        const yt=y1+(y2-y1)*t;
+        drawAxes();
+        // »«“ê—œ«‰Ì Â„Â »—œ«—Â«Ì ﬁ»·Ì œ— ¬—«ÌÂ state
+        for(let s of drawn) drawArrow(...s);
+        drawArrow(x1,y1,xt,yt,color,width);
+        if(frame<frames) requestAnimationFrame(step);
+        else{
+            drawn.push([x1,y1,x2,y2,color,width]);
+            if(onComplete) onComplete();
+        }
+    }
+    step();
+}
+
+let drawn=[];
+
+function drawVectors(){
+    const x1=parseFloat(x("x1")), y1=parseFloat(x("y1"));
+    const x2=parseFloat(x("x2")), y2=parseFloat(x("y2"));
+    const k1=parseFloat(x("k1")), k2=parseFloat(x("k2"));
+    const method=document.getElementById("method").value;
+
+    const cx=canvas.width/2, cy=canvas.height/2;
+    drawn=[];
+    drawAxes();
+
+    // „ﬁÌ«” ŒÊœò«—
+    const maxVal=Math.max(Math.abs(x1*k1),Math.abs(y1*k1),
+                          Math.abs(x2*k2),Math.abs(y2*k2));
+    const scale=(Math.min(canvas.width,canvas.height)/2.5)/(maxVal||1);
+
+    const A={x:x1*k1*scale, y:y1*k1*scale};
+    const B={x:x2*k2*scale, y:y2*k2*scale};
+
+    // »—œ«— Ã„⁄
+    const R={x:A.x+B.x, y:A.y+B.y};
+
+    // ‰ê«‘  »Â „Œ ’«  »Ê„
+    const O={x:cx, y:cy};
+    const Aend={x:O.x+A.x, y:O.y-A.y};
+    const Bend={x:O.x+B.x, y:O.y-B.y};
+    const Rend={x:O.x+R.x, y:O.y-R.y};
+
+    // ‘—Ê⁄ «‰Ì„Ì‘‰
+    animateVector(O.x,O.y,Aend.x,Aend.y,"#10b981",3,()=>{
+        if(method==="triangle"){
+            animateVector(Aend.x,Aend.y,Aend.x+B.x,Aend.y-B.y,"#ef4444",3,()=>{
+                animateVector(O.x,O.y,Rend.x,Rend.y,"#2563eb",4);
+            });
+        }else{
+            // „ Ê«“Ì «·«÷·«⁄
+            animateVector(O.x,O.y,Bend.x,Bend.y,"#ef4444",3,()=>{
+                // ŒÿÊÿ „Ê«“Ì »—«Ì ‰„«Ì‘ ‘ò· „ Ê«“Ìù«·«÷·«⁄
+                drawn.push([Aend.x,Aend.y,Aend.x+B.x,Aend.y-B.y,"#ef4444",1]);
+                drawn.push([Bend.x,Bend.y,Bend.x+A.x,Bend.y-A.y,"#10b981",1]);
+                drawAxes();
+                for(let s of drawn) drawArrow(...s);
+                animateVector(O.x,O.y,Rend.x,Rend.y,"#2563eb",4);
+            });
+        }
+    });
+
+    // ‰„«Ì‘ ‰ ÌÃÂ ⁄œœÌ
+    document.getElementById("result").textContent=
+      `‰ ÌÃÂ Ã„⁄: (${(x1*k1 + x2*k2).toFixed(2)} , ${(y1*k1 + y2*k2).toFixed(2)})`;
+}
+
+function x(id){return document.getElementById(id).value;}
+drawAxes();
+</script>
+</body>
+</html>

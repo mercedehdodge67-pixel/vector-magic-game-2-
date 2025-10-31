@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>بازی آموزشی جمع بردارها</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <h1>بازی آموزشی جمع بردارها</h1>
+
+  <p id="mobileTip">کاربر گرامی، اگر مشغول انجام این بازی با گوشی موبایل هستید، از مربع‌های قرمز رنگ برای وارد کردن علامت منفی عدد استفاده کنید.</p>
+
+  <div class="container">
+    <div class="vector-input">
+      <label>بردار A = (</label>
+      <label>x₁ =</label><input id="x1" type="number" value="2">
+      <label>, y₁ =</label><input id="y1" type="number" value="1">
+      <label>)</label>
+      <label>ضریب k₁ =</label><input id="k1" type="number" value="1">
+      <div class="neg-buttons">
+        <button class="neg" onclick="toggleSign('x1')">±x₁</button>
+        <button class="neg" onclick="toggleSign('y1')">±y₁</button>
+        <button class="neg" onclick="toggleSign('k1')">±k₁</button>
+      </div>
+    </div>
+
+    <div class="vector-input">
+      <label>بردار B = (</label>
+      <label>x₂ =</label><input id="x2" type="number" value="1">
+      <label>, y₂ =</label><input id="y2" type="number" value="3">
+      <label>)</label>
+      <label>ضریب k₂ =</label><input id="k2" type="number" value="1">
+      <div class="neg-buttons">
+        <button class="neg" onclick="toggleSign('x2')">±x₂</button>
+        <button class="neg" onclick="toggleSign('y2')">±y₂</button>
+        <button class="neg" onclick="toggleSign('k2')">±k₂</button>
+      </div>
+    </div>
+
+    <div class="method-select">
+      <label>روش:</label>
+      <select id="method">
+        <option value="triangle">مثلثی</option>
+        <option value="parallelogram">متوازی‌الاضلاع</option>
+      </select>
+      <button onclick="showEquation()">نمایش</button>
+    </div>
+  </div>
+
+  <div id="equation"></div>
+  <canvas id="vectorCanvas"></canvas>
+  <div id="result"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

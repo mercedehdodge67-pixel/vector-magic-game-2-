@@ -1,1 +1,1 @@
-# vector-magic-game-2 (combine)
+بازی آموزشی ترکیب خطی بردارها
